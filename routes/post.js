@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const Article = require('./../models/articles');
+const Article = require('../models/articles');
 
 
 router.get('/', async (req, res) => {
@@ -29,17 +29,19 @@ router.post('/', async (req, res, next) => {
   next()
 }, saveArticleAndRedirect('new'))
 
-router.put('/:id', async (req, res, next) => {
+router.post('/:id', async (req, res, next) => {
   req.article = await Article.findById(req.params.id)
   next()
 }, saveArticleAndRedirect('edit'))
 
-router.delete('/:id', async (req, res) => {
+router.delete('delete/:id', async (req, res) => {
+  console.log('delete')
   await Article.findByIdAndDelete(req.params.id)
   res.redirect('/')
 })
 
 function saveArticleAndRedirect(path) {
+  console.log('saveArticleAndRedirect')
   return async (req, res) => {
     let article = req.article
     article.title = req.body.title

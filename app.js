@@ -6,10 +6,11 @@ var logger = require('morgan');
 
 const mongoose = require('mongoose')
 const Article = require('./models/articles')
+const session = require('express-session')
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
+var usersRouter = require('./routes/post');
+var registerRouter = require('./routes/register')
 var app = express();
 
 mongoose.connect('mongodb://localhost/blog', {
@@ -26,14 +27,53 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//- seesion
+app.use(session({
+  namme:'test',
+  resave: false,
+  saveUnitialized: false,
+  secret: 'some',
+  cookie:{
+    maxAge : 1000 * 2 * 60,
+    sameSite : true,
+    secure: false
+  }
+}))
 
-app.get('/article', async (req, res) => {
-  const articles = await Article.find().sort({ createdAt: 'desc' })
-  res.render('articles/index', { articles: articles })
+//- check user is authenticated or not
+const checkuser = (req,res,next)=>{
+  if(!req.session.userId){
+    console.log('login')
+  }else{
+    next();
+    console.log('go ahead user is authenticated')
+  }
+}
+
+//- check while user hit login
+const checkifuserloggedin = (req,res,next)=>{
+  if(req.session.userId){
+    console.log('send it to home page.i.e normal page')
+  }else{
+    next();
+    console.log('go ahead user is authenticated')
+  }
+}
+
+app.get('/', async (req, res) => {
+  console.log('/get',req.session)
+  const articles = await Article.find().sort({ createdAt: 'desc' });
+  if(req.session.name){
+    name = req.session.name;
+  }else{
+    name = null;
+  }
+  res.render('articles/index', { articles: articles , name : name})
 })
 // const articles = await Article.find().sort({ createdAt: 'desc' })
   // res.render('articles/index', { articles: articles })
-  app.use('/', indexRouter);
+app.use('/login', indexRouter);
+app.use('/register',registerRouter);
 app.use('/articles', usersRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

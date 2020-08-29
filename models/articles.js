@@ -18,6 +18,10 @@ const articleSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  markdown:{
+    type: String,
+    required: true
+  }
  
 })
 
