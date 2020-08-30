@@ -3,13 +3,7 @@ var router = express.Router();
 const Article = require('../models/articles');
 
 //- check user is authenticated or not
-const checkuser = (req,res,next)=>{
-  if(!req.session.userId){
-   res.redirect('/login')
-  }else{
-    next();
-  }
-}
+const checkuser = require('../middleware/check-auth')
 
 router.get('/', async (req, res) => {
   const articles = await Article.find().sort({ createdAt: 'desc' })

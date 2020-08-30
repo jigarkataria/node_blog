@@ -11,6 +11,8 @@ const session = require('express-session')
 var indexRouter = require('./routes/index');
 var postsRouter = require('./routes/post');
 var registerRouter = require('./routes/register')
+const dotenv = require('dotenv');
+dotenv.config();
 var app = express();
 
 mongoose.connect('mongodb://localhost/blog', {
