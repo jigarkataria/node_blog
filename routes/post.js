@@ -2,6 +2,14 @@ var express = require('express');
 var router = express.Router();
 const Article = require('../models/articles');
 
+//- check user is authenticated or not
+const checkuser = (req,res,next)=>{
+  if(!req.session.userId){
+   res.redirect('/login')
+  }else{
+    next();
+  }
+}
 
 router.get('/', async (req, res) => {
   const articles = await Article.find().sort({ createdAt: 'desc' })
@@ -9,33 +17,39 @@ router.get('/', async (req, res) => {
  res.render('articles/index', { articles: {articles} })
 })
 
-router.get('/new', (req, res) => {
+router.get('/new',checkuser, (req, res) => {
   res.render('articles/new', { article: new Article() })
 })
 
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id',checkuser, async (req, res) => {
   const article = await Article.findById(req.params.id)
   res.render('articles/edit', { article: article })
 })
 
-router.get('/:slug', async (req, res) => {
+router.get('/:slug',checkuser, async (req, res) => {
   const article = await Article.findOne({ slug: req.params.slug })
   if (article == null) res.redirect('/')
   res.render('articles/show', { article: article })
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/',checkuser, async (req, res, next) => {
+  console.log('post ')
   req.article = new Article()
   next()
 }, saveArticleAndRedirect('new'))
 
-router.post('/:id', async (req, res, next) => {
+router.post('/:id',checkuser, async (req, res, next) => {
   req.article = await Article.findById(req.params.id)
   next()
 }, saveArticleAndRedirect('edit'))
 
-router.delete('delete/:id', async (req, res) => {
+router.delete('/:id',checkuser,async (req, res) => {
   console.log('delete')
+  await Article.findByIdAndDelete(req.params.id)
+  res.redirect('/')
+})
+
+router.get('/delete/:id',async(req,res)=>{
   await Article.findByIdAndDelete(req.params.id)
   res.redirect('/')
 })
@@ -44,9 +58,11 @@ function saveArticleAndRedirect(path) {
   console.log('saveArticleAndRedirect')
   return async (req, res) => {
     let article = req.article
-    article.title = req.body.title
-    article.description = req.body.description
-    article.markdown = req.body.markdown
+    article.title = req.body.title;
+    article.pageheading = req.body.pageheading;
+    article.secondarytext = req.body.secondarytext;
+    article.description = req.body.description;
+    article.userId = req.session.userId;
     try {
       article = await article.save()
       res.redirect(`/articles/${article.slug}`)

@@ -1,4 +1,12 @@
 <div class="form-group">
+    <label for="pageheading">Page Heading</label>
+    <input required value="<%= article.pageheading %>" type="text" name="pageheading" id="pageheading" class="form-control">
+  </div>
+  <div class="form-group">
+      <label for="secondarytext">Secondary Text</label>
+      <input required value="<%= article.secondarytext %>" type="text" name="secondarytext" id="secondarytext" class="form-control">
+    </div>
+<div class="form-group">
   <label for="title">Title</label>
   <input required value="<%= article.title %>" type="text" name="title" id="title" class="form-control">
 </div>
@@ -6,10 +14,7 @@
   <label for="description">Description</label>
   <textarea name="description" id="description" class="form-control"><%= article.description %></textarea>
 </div>
-<div class="form-group">
-  <label for="markdown">Markdown</label>
-  <textarea required name="markdown" id="markdown" class="form-control"><%= article.markdown %></textarea>
-</div>
+
 
 <a href="/" class="btn btn-secondary">Cancel</a>
 <button type="submit" class="btn btn-primary">Save</button>

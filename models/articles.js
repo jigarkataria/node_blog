@@ -2,6 +2,14 @@ const mongoose = require('mongoose')
 const slugify = require('slugify')
 
 const articleSchema = new mongoose.Schema({
+  pageheading:{
+    type: String,
+    required: true
+  },  
+  secondarytext: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: true
@@ -18,9 +26,8 @@ const articleSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  markdown:{
-    type: String,
-    required: true
+  userId:{
+    type: String
   }
  
 })
@@ -29,9 +36,6 @@ articleSchema.pre('validate', function(next) {
   if (this.title) {
     this.slug = slugify(this.title, { lower: true, strict: true })
   }
-
-
-
   next()
 })
 
