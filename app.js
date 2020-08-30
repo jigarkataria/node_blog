@@ -9,7 +9,7 @@ const Article = require('./models/articles')
 const session = require('express-session')
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/post');
+var postsRouter = require('./routes/post');
 var registerRouter = require('./routes/register')
 var app = express();
 
@@ -43,20 +43,9 @@ app.use(session({
 //- check user is authenticated or not
 const checkuser = (req,res,next)=>{
   if(!req.session.userId){
-    console.log('login')
+   res.redirect('/login')
   }else{
     next();
-    console.log('go ahead user is authenticated')
-  }
-}
-
-//- check while user hit login
-const checkifuserloggedin = (req,res,next)=>{
-  if(req.session.userId){
-    console.log('send it to home page.i.e normal page')
-  }else{
-    next();
-    console.log('go ahead user is authenticated')
   }
 }
 
@@ -70,11 +59,16 @@ app.get('/', async (req, res) => {
   }
   res.render('articles/index', { articles: articles , name : name})
 })
+app.get('/logout',async (req,res)=>{
+  req.session.destroy();
+  res.redirect('/');
+})
 // const articles = await Article.find().sort({ createdAt: 'desc' })
   // res.render('articles/index', { articles: articles })
 app.use('/login', indexRouter);
 app.use('/register',registerRouter);
-app.use('/articles', usersRouter);
+app.use('/articles', postsRouter);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

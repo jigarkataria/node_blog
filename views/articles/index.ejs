@@ -78,6 +78,9 @@
             <h2 class="card-title"><%= article.title %></h2>
             <p class="card-text"><%= article.description %></p>
             <a href="articles/<%= article.slug %>" class="btn btn-primary">Read More &rarr;</a>
+            <form action="/articles/delete/<%= article.id %>?_method=DELETE" class="d-inline">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
           </div>
           <div class="card-footer text-muted">
             <%= article.createdAt.toLocaleDateString() %>
