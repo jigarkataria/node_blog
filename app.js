@@ -13,8 +13,9 @@ var postsRouter = require('./routes/post');
 var registerRouter = require('./routes/register')
 const dotenv = require('dotenv');
 dotenv.config();
+const passport = require('passport')
 var app = express();
-
+require('./auth/auth');
 mongoose.connect('mongodb://localhost/blog', {
   useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true
 })
@@ -41,7 +42,8 @@ app.use(session({
     secure: false
   }
 }))
-
+app.use(passport.initialize());
+app.use(passport.session());
 //- check user is authenticated or not
 const checkuser = (req,res,next)=>{
   if(!req.session.userId){
@@ -56,10 +58,12 @@ app.get('/', async (req, res) => {
   const articles = await Article.find().sort({ createdAt: 'desc' });
   if(req.session.name){
     name = req.session.name;
+    token = req.session.token;
   }else{
     name = null;
+    token = null;
   }
-  res.render('articles/index', { articles: articles , name : name})
+  res.render('articles/index', { articles: articles , name : name , token : token})
 })
 app.get('/logout',async (req,res)=>{
   req.session.destroy();

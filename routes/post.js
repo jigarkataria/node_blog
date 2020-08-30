@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Article = require('../models/articles');
-
+const passport = require('passport');
 //- check user is authenticated or not
 const checkuser = require('../middleware/check-auth')
 
@@ -11,33 +11,33 @@ router.get('/', async (req, res) => {
  res.render('articles/index', { articles: {articles} })
 })
 
-router.get('/new',checkuser, (req, res) => {
+router.get('/new',passport.authenticate('jwt', { session : false }), (req, res) => {
   res.render('articles/new', { article: new Article() })
 })
 
-router.get('/edit/:id',checkuser, async (req, res) => {
+router.get('/edit/:id',passport.authenticate('jwt', { session : false }), async (req, res) => {
   const article = await Article.findById(req.params.id)
   res.render('articles/edit', { article: article })
 })
 
-router.get('/:slug',checkuser, async (req, res) => {
+router.get('/:slug',passport.authenticate('jwt', { session : false }), async (req, res) => {
   const article = await Article.findOne({ slug: req.params.slug })
   if (article == null) res.redirect('/')
   res.render('articles/show', { article: article })
 })
 
-router.post('/',checkuser, async (req, res, next) => {
+router.post('/',passport.authenticate('jwt', { session : false }), async (req, res, next) => {
   console.log('post ')
   req.article = new Article()
   next()
 }, saveArticleAndRedirect('new'))
 
-router.post('/:id',checkuser, async (req, res, next) => {
+router.post('/:id',passport.authenticate('jwt', { session : false }), async (req, res, next) => {
   req.article = await Article.findById(req.params.id)
   next()
 }, saveArticleAndRedirect('edit'))
 
-router.delete('/:id',checkuser,async (req, res) => {
+router.delete('/:id',passport.authenticate('jwt', { session : false }),async (req, res) => {
   console.log('delete')
   await Article.findByIdAndDelete(req.params.id)
   res.redirect('/')
@@ -59,7 +59,7 @@ function saveArticleAndRedirect(path) {
     article.userId = req.session.userId;
     try {
       article = await article.save()
-      res.redirect(`/articles/${article.slug}`)
+      res.redirect(`/articles/${article.slug}?secret_token=${req.session.token}`)
     } catch (e) {
       res.render(`articles/${path}`, { article: article })
     }
