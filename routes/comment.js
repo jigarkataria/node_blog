@@ -6,7 +6,7 @@ var comment = require('../models/comments')
 router.post('/',async (req,res)=>{
     let newObj = JSON.parse(JSON.stringify(req.body));
     let commentobj = {
-        comment : 'req.body.comment', givenby : req.session.userId , post :req.query.post 
+        comment : Object.values(newObj)[0], givenby : req.session.userId , post :req.query.post 
     }
     const user = await comment.create(commentobj);
     res.status('200');
