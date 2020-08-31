@@ -6,6 +6,8 @@ const JWTstrategy = require('passport-jwt').Strategy;
 //We use this to extract the JWT sent by the user
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 //Create a passport middleware to handle user registration
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var configAuth = require('./config');
 passport.use('signup', new localStrategy({
   usernameField : 'email',
   passwordField : 'password',
@@ -67,3 +69,37 @@ passport.use(new JWTstrategy({
     done(error);
   }
 }));
+
+passport.use(new GoogleStrategy({
+  clientID: configAuth.googleAuth.clientID,
+  clientSecret: configAuth.googleAuth.clientSecret,
+  callbackURL: configAuth.googleAuth.callbackURL
+},
+function(accessToken, refreshToken, profile, done) {
+    process.nextTick(function(){
+      UserModel.findOne({'google.id': profile.id}, function(err, user){
+        if(err)
+          return done(err);
+        if(user)
+          return done(null, user);
+        else {
+          var newUser = new UserModel();
+          newUser.google.id = profile.id;
+          newUser.google.token = accessToken;
+          newUser.google.name = profile.displayName;
+          newUser.google.email = profile.emails[0].value;
+
+          req.session.name = profile.displayName;
+          req.session.email = profile.emails[0].value;
+          newUser.save(function(err){
+            if(err)
+              throw err;
+            return done(null, newUser);
+          })
+          console.log(profile);
+        }
+      });
+    });
+  }
+
+));

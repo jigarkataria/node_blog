@@ -1,4 +1,4 @@
-const bodyparser = require('body-parser') 
+const bodyparser = require('body-parser')
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -21,17 +21,17 @@ var cors = require('cors')
 var app = express();
 // app.use(express.urlencoded({extended: true}))
 var allowedOrigins = ['http://someorigin.com',
-                      'http://anotherorigin.com',
-                      'http://localhost:3000'];
+  'http://anotherorigin.com',
+  'http://localhost:3000'];
 app.use(cors({
 
-  origin: function(origin, callback){
+  origin: function (origin, callback) {
     // allow requests with no origin
     // (like mobile apps or curl requests)
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
       var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
+        'allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
     return callback(null, true);
@@ -46,7 +46,7 @@ app.use(cors({
 require('./auth/auth');
 // Body-parser middleware 
 app.use(bodyparser.json())
-app.use(bodyparser.urlencoded({extended:true})) 
+app.use(bodyparser.urlencoded({ extended: true }))
 app.use(bodyparser.json({ type: 'application/*+json' }))
 
 mongoose.connect('mongodb://localhost/blog', {
@@ -65,60 +65,69 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //- seesion
 app.use(session({
-  namme:'test',
+  namme: 'test',
   resave: false,
   saveUnitialized: false,
   secret: 'some',
-  cookie:{
-    maxAge : 1000 * 2 * 60,
-    sameSite : true,
+  cookie: {
+    maxAge: 1000 * 2 * 60,
+    sameSite: true,
     secure: false
   }
 }))
 app.use(passport.initialize());
 app.use(passport.session());
 //- check user is authenticated or not
-const checkuser = (req,res,next)=>{
-  if(!req.session.userId){
-   res.redirect('/login')
-  }else{
+const checkuser = (req, res, next) => {
+  if (!req.session.userId) {
+    res.redirect('/login')
+  } else {
     next();
   }
 }
 
 app.get('/', async (req, res) => {
-  console.log('/get',req.session)
-  const articles = await Article.find().populate('userId','name').sort({ createdAt: 'desc' }).exec();
-  console.log(articles,'*')
-  if(req.session.name){
+  console.log('/get', req.session)
+  const articles = await Article.find().populate('userId', 'name').sort({ createdAt: 'desc' }).exec();
+  console.log(articles, '*')
+  if (req.session.name) {
     name = req.session.name;
     token = req.session.token;
-  }else{
+  } else {
     name = null;
     token = null;
   }
-  res.render('articles/index', { articles: articles , name : name , token : token})
+  res.render('articles/index', { articles: articles, name: name, token: token })
 })
-app.get('/logout',async (req,res)=>{
+app.get('/logout', async (req, res) => {
   req.session.destroy();
   res.redirect('/');
 })
 // const articles = await Article.find().sort({ createdAt: 'desc' })
-  // res.render('articles/index', { articles: articles })
+// res.render('articles/index', { articles: articles })
 app.use('/login', indexRouter);
-app.use('/register',registerRouter);
+app.use('/register', registerRouter);
 app.use('/articles', postsRouter);
-app.use('/comments',commentsRouter);
-app.use('/profile',profileRouter);
+app.use('/comments', commentsRouter);
+app.use('/profile', profileRouter);
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/404',
+    session: false
+  }));
+
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  console.log(err,'*********')
+app.use(function (err, req, res, next) {
+  console.log(err, '*********')
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

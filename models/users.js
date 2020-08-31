@@ -3,19 +3,25 @@ const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    // required: true
   },
   email: {
     type: String,
-    required: true
+    // required: true
   },
   password: {
     type: String,
-    required: true
+    // required: true
   },
   profilepic:{
     type: String,
-  }
+  },
+  google: {
+		id: String,
+		token: String,
+		email: String,
+		name: String
+	}
 })
 
 //We'll use this later on to make sure that the user trying to log in has the correct credentials
