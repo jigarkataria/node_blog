@@ -23,16 +23,14 @@ var storage = multer.diskStorage({
   app.post('/', function (req, res) {
     upload(req, res, function (err) {
       if (err instanceof multer.MulterError) {
-          console.log(err,'multiple error')
+        
         // A Multer error occurred when uploading.
       } else if (err) {
-          console.log(err,'single error')
+         
         // An unknown error occurred when uploading.
-      }
-      console.log('response fromm multer',req.file.filename)
+      }    
       
      let operation = User.findOneAndUpdate({email : req.session.email },{$set:{'profilepic': req.file.filename}}).exec();
-      console.log(operation,'operation***')
      res.redirect('/')
       // Everything went fine.
     })

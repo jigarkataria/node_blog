@@ -45,7 +45,6 @@ passport.use('login', new localStrategy({
     //Send the user information to the next middleware
     return done(null, user, { message : 'Logged in Successfully'});
   } catch (error) {
-      console.log(error,'in catch of login')
     return done(error);
   }
 }));
@@ -61,11 +60,9 @@ passport.use(new JWTstrategy({
   jwtFromRequest : ExtractJWT.fromUrlQueryParameter('secret_token')
 }, async (token, done) => {
   try {
-      console.log('here in check', token,done);
     //Pass the user details to the next middleware
     return done(null, token.user);
   } catch (error) {
-      console.log('here in catch',error);
     done(error);
   }
 }));
@@ -87,16 +84,12 @@ function(accessToken, refreshToken, profile, done) {
           newUser.google.id = profile.id;
           newUser.google.token = accessToken;
           newUser.google.name = profile.displayName;
-          newUser.google.email = profile.emails[0].value;
-
-          req.session.name = profile.displayName;
-          req.session.email = profile.emails[0].value;
+          newUser.google.email = profile.emails[0].value;         
           newUser.save(function(err){
             if(err)
               throw err;
             return done(null, newUser);
           })
-          console.log(profile);
         }
       });
     });
