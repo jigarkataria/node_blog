@@ -1,3 +1,4 @@
+const bodyparser = require('body-parser') 
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -10,12 +11,22 @@ const session = require('express-session')
 
 var indexRouter = require('./routes/index');
 var postsRouter = require('./routes/post');
-var registerRouter = require('./routes/register')
+var registerRouter = require('./routes/register');
+var commentsRouter = require('./routes/comment');
+var profileRouter = require('./routes/profile')
 const dotenv = require('dotenv');
 dotenv.config();
 const passport = require('passport')
 var app = express();
+// app.use(express.urlencoded({extended: true}))
+
+
 require('./auth/auth');
+// Body-parser middleware 
+app.use(bodyparser.json())
+app.use(bodyparser.urlencoded({extended:true})) 
+app.use(bodyparser.json({ type: 'application/*+json' }))
+
 mongoose.connect('mongodb://localhost/blog', {
   useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true
 })
@@ -55,7 +66,8 @@ const checkuser = (req,res,next)=>{
 
 app.get('/', async (req, res) => {
   console.log('/get',req.session)
-  const articles = await Article.find().sort({ createdAt: 'desc' });
+  const articles = await Article.find().populate('userId','name').sort({ createdAt: 'desc' }).exec();
+  console.log(articles,'*')
   if(req.session.name){
     name = req.session.name;
     token = req.session.token;
@@ -74,6 +86,8 @@ app.get('/logout',async (req,res)=>{
 app.use('/login', indexRouter);
 app.use('/register',registerRouter);
 app.use('/articles', postsRouter);
+app.use('/comments',commentsRouter);
+app.use('/profile',profileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,6 +1,8 @@
+//post
 var express = require('express');
 var router = express.Router();
 const Article = require('../models/articles');
+const Comment = require('../models/comments')
 const passport = require('passport');
 //- check user is authenticated or not
 const checkuser = require('../middleware/check-auth')
@@ -21,9 +23,11 @@ router.get('/edit/:id',passport.authenticate('jwt', { session : false }), async 
 })
 
 router.get('/:slug',passport.authenticate('jwt', { session : false }), async (req, res) => {
-  const article = await Article.findOne({ slug: req.params.slug })
+  const article = await Article.findOne({ slug: req.params.slug }).populate('userId')
+  const comment = await Comment.find({post : article._id}).populate('givenby')
+  console.log(comment,'Comment')
   if (article == null) res.redirect('/')
-  res.render('articles/show', { article: article })
+  res.render('articles/show', { article: article , comments : comment})
 })
 
 router.post('/',passport.authenticate('jwt', { session : false }), async (req, res, next) => {

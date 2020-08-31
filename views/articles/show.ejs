@@ -34,6 +34,9 @@
             <li class="nav-item active">
                 <a class="nav-link">Hi, <%= name %></a>
               </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/profile">Upload DP</a>
+                </li>
             <li class="nav-item">
               <a class="nav-link" href="/articles/new">Add New Article</a>
             </li>
@@ -73,7 +76,7 @@
         <!-- Author -->
         <p class="lead">
           by
-          <a href="#">Start Bootstrap</a>
+          <a href="#"><%= article.userId.name %></a>
         </p>
 
         <hr>
@@ -112,9 +115,9 @@
         <div class="card my-4">
           <h5 class="card-header">Leave a Comment:</h5>
           <div class="card-body">
-            <form>
+            <form action="/comments?secret_token=<%= token %>&post=<%= article._id %>&slugname=<%= article.slug %>" method="POST" >
               <div class="form-group">
-                <textarea class="form-control" rows="3"></textarea>
+                <textarea class="form-control" name="Comment" id="Comment" rows="3"></textarea>
               </div>
               <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -122,13 +125,16 @@
         </div>
 
         <!-- Single Comment -->
+        <% comments.forEach(comment => { %>
         <div class="media mb-4">
-          <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+          <img class="d-flex mr-3 rounded-circle" style="width:50px;height:50px;" src="http://localhost:3000/upload/<%= comment.givenby.profilepic%>" alt="">
           <div class="media-body">
-            <h5 class="mt-0">Commenter Name</h5>
-            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-          </div>
+             
+            <h5 class="mt-0"> <%= comment.givenby.name %></h5>
+            <%= comment.comment %>
+          </div>         
         </div>
+        <% }) %>
       </div>
     </div>
     <!-- /.row -->

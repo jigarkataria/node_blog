@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const slugify = require('slugify')
+var Schema = mongoose.Schema;
 
 const articleSchema = new mongoose.Schema({
   pageheading:{
@@ -27,7 +28,8 @@ const articleSchema = new mongoose.Schema({
     unique: true
   },
   userId:{
-    type: String
+    type: Schema.Types.ObjectId, ref: 'User',
+    required:true
   }
  
 })

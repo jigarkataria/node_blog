@@ -30,10 +30,13 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-            <%if (name != null) {%>
+          <%if (name != null) {%>
           <li class="nav-item active">
-              <a class="nav-link">Hi, <%= name %></a>
-            </li>
+            <a class="nav-link">Hi, <%= name %></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/profile">Upload DP</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="/articles/new?secret_token=<%= token %>">Add New Article</a>
           </li>
@@ -43,17 +46,17 @@
           <% } %>
           <%if (name == null) {%>
           <li class="nav-item active">
-              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-            </li>
-           
-               <li class="nav-item active">
-                <a class="nav-link" href="/login">Login <span class="sr-only">(current)</span></a>
-              </li>
-             
-              <li class="nav-item active">
-                  <a class="nav-link" href="/register">Register <span class="sr-only">(current)</span></a>
-                </li>
-                <% } %>
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+
+          <li class="nav-item active">
+            <a class="nav-link" href="/login">Login <span class="sr-only">(current)</span></a>
+          </li>
+
+          <li class="nav-item active">
+            <a class="nav-link" href="/register">Register <span class="sr-only">(current)</span></a>
+          </li>
+          <% } %>
         </ul>
       </div>
     </div>
@@ -77,14 +80,15 @@
           <div class="card-body">
             <h2 class="card-title"><%= article.title %></h2>
             <p class="card-text"><%= article.description %></p>
-            <a href="articles/<%= article.slug %>" class="btn btn-primary">Read More &rarr;</a>
+            <a href="articles/<%= article.slug %>?secret_token=<%= token %>" class="btn btn-primary">Read More
+              &rarr;</a>
             <form action="/articles/delete/<%= article.id %>?_method=DELETE" class="d-inline">
               <button type="submit" class="btn btn-danger">Delete</button>
             </form>
           </div>
           <div class="card-footer text-muted">
-            <%= article.createdAt.toLocaleDateString() %>
-            <a href="#">Start Bootstrap</a>
+            <%= article.createdAt.toLocaleDateString() %> by 
+            <a href="#"><%= article.userId.name %></a>
           </div>
         </div>
         <% }) %>
@@ -93,19 +97,19 @@
 
     </div>
     <!-- /.container -->
-</div>
+  </div>
 </body>
-    <!-- Footer -->
-    <footer class="py-5 bg-dark ">
-      <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
-      </div>
-      <!-- /.container -->
-    </footer>
+<!-- Footer -->
+<footer class="py-5 bg-dark ">
+  <div class="container">
+    <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+  </div>
+  <!-- /.container -->
+</footer>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 
 </html>
