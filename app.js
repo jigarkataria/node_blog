@@ -86,10 +86,8 @@ const checkuser = (req, res, next) => {
   }
 }
 
-app.get('/', async (req, res) => {
-  console.log('/get', req.session)
+app.get('/', async (req, res) => { 
   const articles = await Article.find().populate('userId', 'name').sort({ createdAt: 'desc' }).exec();
-  console.log(articles, '*')
   if (req.session.name) {
     name = req.session.name;
     token = req.session.token;
@@ -127,7 +125,6 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  console.log(err, '*********')
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
