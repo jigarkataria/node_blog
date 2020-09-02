@@ -4,8 +4,6 @@ var router = express.Router();
 const Article = require('../models/articles');
 const Comment = require('../models/comments')
 const passport = require('passport');
-//- check user is authenticated or not
-const checkuser = require('../middleware/check-auth')
 
 router.get('/', async (req, res) => {
   const articles = await Article.find().sort({ createdAt: 'desc' })

@@ -64,6 +64,9 @@
 
   <!-- Page Content -->
   <div class="container">
+      <%if (articles.length == 0) {%>
+<div> No blog Available</div>
+        <% } %>
 
     <div class="row">
       <% articles.forEach(article => { %>
