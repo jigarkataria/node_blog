@@ -12,7 +12,6 @@ router.get('/', async (req, res) => {
   
 
 router.post('/', passport.authenticate('signup', { session : false }) , async (req, res, next) => {
-  console.log(done,'singup')
     res.render('login',{error:null});
   });
 

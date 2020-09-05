@@ -130,23 +130,14 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  console.log(req.originalUrl,'original urlsss')
   if(req.originalUrl == '/login'){
-    console.log('in if')
     res.status('200').render('login',{error:res.locals.message})
   } else if(req.originalUrl == '/register'){
-    console.log('in if',err)
     res.status('200').render('register',{error:err})
   }else{
-    console.log(err,err.message)
     res.status(err.status || 500);
     res.render('error');
   }
-// console.log(err,res.locals.message)
-// console.log(req.originalUrl)
-
-  // render the error page
-
 });
 
 module.exports = app;

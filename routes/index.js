@@ -22,9 +22,7 @@ router.post('/', async (req, res, next) => {
   passport.authenticate('login', async (err, user, info) => {     try {
       if(err || !user){
         const error = new Error(info.message)
-        console.log(err,'error in authenticate')
         return next(error);
-        // res.redirect('/login',{error:info})
       }
       req.login(user, { session : false }, async (error) => {
         if( error ) return next(error)
