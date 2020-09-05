@@ -21,7 +21,11 @@ const userSchema = new mongoose.Schema({
 		token: String,
 		email: String,
 		name: String
-	}
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
 })
 
 //We'll use this later on to make sure that the user trying to log in has the correct credentials

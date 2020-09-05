@@ -13,7 +13,11 @@ const CommentSchema = new mongoose.Schema({
   givenby: {
     type: Schema.Types.ObjectId, ref: 'User',
     required: true
-  }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
 })
 
 

@@ -7,12 +7,13 @@ const jwt = require('jsonwebtoken');
 
 /* GET home page. */
 router.get('/', async (req, res) => {
-   res.render('register',{errors: ""})
+   res.render('register',{error: null})
   })
   
 
 router.post('/', passport.authenticate('signup', { session : false }) , async (req, res, next) => {
-    res.redirect('/login');
+  console.log(done,'singup')
+    res.render('login',{error:null});
   });
 
   module.exports = router;

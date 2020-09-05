@@ -79,7 +79,9 @@
 
         <!-- Blog Post -->
         <div class="card mb-4">
-          <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
+            <%if (article.blogpic == undefined) {%> <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">   <% } %>
+            <%if (article.blogpic != undefined) {%> <img class="card-img-top" src="http://localhost:3000/upload/<%= article.blogpic%>" alt="Card image cap">   <% } %>
+
           <div class="card-body">
             <h2 class="card-title"><%= article.title %></h2>
             <p class="card-text"><%= article.description %></p>
@@ -88,13 +90,15 @@
               <%if (name === article.userId.name) {%>
               <a href="/articles/edit/<%= article.id %>?secret_token=<%= token %>" class="btn btn-primary">Edit
                 &rarr;</a>
+                <a href="/blogpic/<%= article.id %>?secret_token=<%= token %>" class="btn btn-primary">Add / Change Blog Pic
+                  &rarr;</a>
             <form action="/articles/delete/<%= article.id %>?_method=DELETE" class="d-inline">
               <button type="submit" class="btn btn-danger">Delete</button>
             </form>
             <% } %>
           </div>
           <div class="card-footer text-muted">
-            <%= article.createdAt.toLocaleDateString() %> by 
+            <%= article.createdAt.toDateString() %> by 
             <a href="#"><%= article.userId.name %></a>
           </div>
         </div>
@@ -109,7 +113,7 @@
 <!-- Footer -->
 <footer class="py-5 bg-dark ">
   <div class="container">
-    <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+    <p class="m-0 text-center text-white">Copyright &copy; My Blog 2020</p>
   </div>
   <!-- /.container -->
 </footer>

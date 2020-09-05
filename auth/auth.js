@@ -13,6 +13,8 @@ passport.use('signup', new localStrategy({
   passwordField : 'password',
   passReqToCallback: true
 }, async (req,email, password, done) => {
+  if(req.body.password == req.body.passwordConfirm){
+    console.log('if')
     try {
         let name = req.body.name;
       //Save the information provided by the user to the the database
@@ -22,6 +24,10 @@ passport.use('signup', new localStrategy({
     } catch (error) {
       done(error);
     }
+  }else{
+    console.log('else')
+    done(`Password doesn't match.Please try again with same password.`);
+  }
 }));
 
 //Create a passport middleware to handle User login

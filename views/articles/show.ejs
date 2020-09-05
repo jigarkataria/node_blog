@@ -83,11 +83,12 @@
 
         <!-- Date/Time -->
         <!-- <p>Posted on January 1, 2019 at 12:00 PM</p> -->
-        <p> <%= article.createdAt.toLocaleDateString() %></p>
+        <p> <%= article.createdAt.toDateString() %></p>
         <hr>
 
         <!-- Preview Image -->
-        <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+        <%if (article.blogpic == undefined) {%> <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">   <% } %>
+        <%if (article.blogpic != undefined) {%> <img class="card-img-top" src="http://localhost:3000/upload/<%= article.blogpic%>" alt="Card image cap">   <% } %>
 
         <hr>
 
@@ -130,9 +131,10 @@
           <img class="d-flex mr-3 rounded-circle" style="width:50px;height:50px;" src="http://localhost:3000/upload/<%= comment.givenby.profilepic%>" alt="">
           <div class="media-body">
              
-            <h5 class="mt-0"> <%= comment.givenby.name %></h5>
+            <h5 class="mt-0"> <%= comment.givenby.name %> commented on <%= comment.createdAt.toDateString() %></h5>
             <%= comment.comment %>
-          </div>         
+          </div>  
+               
         </div>
         <% }) %>
       </div>
@@ -144,7 +146,7 @@
   <!-- Footer -->
   <footer class="py-5 bg-dark">
     <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+      <p class="m-0 text-center text-white">Copyright &copy; cutting-edge models 2020</p>
     </div>
     <!-- /.container -->
   </footer>
