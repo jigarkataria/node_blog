@@ -8,6 +8,8 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 //Create a passport middleware to handle user registration
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var configAuth = require('./config');
+const bcrypt = require('bcrypt');
+
 passport.use('signup', new localStrategy({
   usernameField : 'email',
   passwordField : 'password',
@@ -16,8 +18,9 @@ passport.use('signup', new localStrategy({
   if(req.body.password == req.body.passwordConfirm){
     try {
         let name = req.body.name;
+        let  passwordHash = bcrypt.hashSync(password,10);
       //Save the information provided by the user to the the database
-      const user = await UserModel.create({ email, password,name  });
+      const user = await UserModel.create({ email, password : passwordHash ,name  });
       //Send the user information to the next middleware
       return done(null, user);
     } catch (error) {
